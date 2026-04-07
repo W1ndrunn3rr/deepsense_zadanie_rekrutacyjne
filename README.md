@@ -1,9 +1,7 @@
 # Air Quality Station Audit - LLM Benchmark Task
 
-A benchmark task designed to partially challenge large language models on multi-step data analysis.
-Model tested scored **0.80** for Sonnet 4.6 and **0.91** for Opus 4.6.
-
----
+A benchmark task designed to partially challenge large language models on multi-step data analysis. Claude Sonnet 4.6 was chosen as the primary target model — strong enough to solve most of the task but expected to miss the wind-dependent underreporting pattern (Definition 3). Claude Opus 4.6 was included as an upper bound reference.
+Sonnet 4.6 scored **0.80**, Opus 4.6 scored **0.91**.
 
 ## Dataset
 
@@ -104,7 +102,7 @@ and penalises both false positives and false negatives symmetrically.
 |---|---|---|---|---|
 | All 6 correct | 6 | 0 | 0 | **1.00** |
 | S04, S09, S13, S20 (LLM output) | 4 | 0 | 2 | **0.80** |
-| S04, S09, S13, S05, S15 (no faulty) | 5 | 0 | 1 | 0.91 |
+| S04, S09, S13, S05, S15 (parks + open_field, missing faulty) | 5 | 0 | 1 | 0.91 |
 | S20 only | 1 | 0 | 5 | 0.29 |
 | Empty | 0 | 0 | 6 | 0.00 |
 
@@ -114,11 +112,9 @@ Model correctly detects:
 - **S20** - frozen readings are a well-known anomaly pattern
 - **S04, S09, S13** - park stations have a strong and consistent PM2.5 deficit
 
-Models miss:
-- **S05, S15** - open field stations require computing zone medians separately
-  for high-wind and low-wind conditions, excluding already-flagged stations from
-  the reference pool. Models typically compute the zone median globally,
-  which dilutes the signal and causes S05/S15 to appear normal.
+But in some cases:
+- Sonnet 4.6 misses **S05** and **S15.**
+- Opus 4.6 finds S05 but misses **S15** — the harder of the two open_field stations.
 
 ---
 
